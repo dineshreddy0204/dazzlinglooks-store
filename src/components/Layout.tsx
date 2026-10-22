@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Search,
@@ -24,14 +24,42 @@ import {
 import { useStore } from '../context/StoreContext';
 import { CATEGORIES } from '../data/sampleData';
 import { DazzlingBeautyFloatingChat } from './DazzlingBeautyAI';
+import { useVisibilityPause } from './LuxuryMotion';
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  useVisibilityPause();
+
   const { cartCount, wishlist, toastMessage } = useStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [shopDropdownOpen, setShopDropdownOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [cartBadgePop, setCartBadgePop] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Passive scroll listener for subtle header elevation change
+  useEffect(() => {
+    const onScroll = () => {
+      const scrolled = window.scrollY > 18;
+      setIsScrolled((prev) => (prev !== scrolled ? scrolled : prev));
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // Micro-pop on cart badge when cartCount changes
+  useEffect(() => {
+    setCartBadgePop(true);
+    const t = window.setTimeout(() => setCartBadgePop(false), 380);
+    return () => window.clearTimeout(t);
+  }, [cartCount]);
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileMenuOpen(false);
+    setShopDropdownOpen(false);
+  }, [location.pathname, location.search]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,7 +89,11 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   const isNavActive = (itemPath: string, label: string) => {
     if (itemPath === '/' && location.pathname === '/') return true;
     if (label === 'Deals' && location.search.includes('deals')) return true;
-    if (label === 'Combo Offers' && location.pathname === '/offers' && !location.search.includes('deals'))
+    if (
+      label === 'Combo Offers' &&
+      location.pathname === '/offers' &&
+      !location.search.includes('deals')
+    )
       return true;
     if (itemPath !== '/' && !itemPath.includes('?') && location.pathname === itemPath) return true;
     return false;
@@ -69,9 +101,9 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FAF7F2] text-[#1A1615] pb-16 md:pb-0">
-      {/* Toast Notification */}
+      {/* Toast Notification with Smooth Slide-In */}
       {toastMessage && (
-        <div className="fixed top-16 right-4 z-50 bg-[#141110] text-white px-4 py-2.5 rounded-xl shadow-xl border border-[#C59B5F] flex items-center gap-2 text-xs sm:text-sm animate-fade-in">
+        <div className="lux-msg-enter fixed top-16 right-4 z-50 bg-[#141110] text-white px-4 py-2.5 rounded-xl shadow-xl border border-[#C59B5F] flex items-center gap-2 text-xs sm:text-sm">
           <Sparkles className="w-4 h-4 text-[#E91E63] shrink-0" />
           <span>{toastMessage}</span>
         </div>
@@ -102,26 +134,36 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         </div>
       </div>
 
-      {/* 2. Main Header Row */}
-      <header className="sticky top-0 z-40 bg-[#FAF7F2]/95 backdrop-blur-md border-b border-[#E6DAC8] shadow-[0_2px_10px_rgba(20,17,16,0.03)]">
-        <div className="max-w-[1380px] mx-auto px-3 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between gap-3 sm:gap-6">
+      {/* 2. Main Header Row with Subtle Scroll Elevation */}
+      <header
+        className={`sticky top-0 z-40 transition-all duration-300 ${
+          isScrolled
+            ? 'bg-[#FAF7F2]/96 backdrop-blur-md border-b border-[#DFD1BE] shadow-[0_8px_28px_rgba(20,17,16,0.06)]'
+            : 'bg-[#FAF7F2]/95 backdrop-blur-xs border-b border-[#E6DAC8] shadow-[0_2px_10px_rgba(20,17,16,0.02)]'
+        }`}
+      >
+        <div
+          className={`max-w-[1380px] mx-auto px-3 sm:px-6 flex items-center justify-between gap-3 sm:gap-6 transition-all duration-300 ${
+            isScrolled ? 'py-2 sm:py-2.5' : 'py-2.5 sm:py-3'
+          }`}
+        >
           {/* Mobile Hamburger + Logo */}
           <div className="flex items-center gap-2.5">
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-1.5 rounded-lg border border-[#E2D5C4] text-[#141110] hover:bg-[#F3ECE2]"
+              className="lg:hidden p-1.5 rounded-lg border border-[#E2D5C4] text-[#141110] hover:bg-[#F3ECE2] transition cursor-pointer"
               aria-label="Toggle Menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
 
             <Link to="/" className="flex items-center gap-3 group shrink-0">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden border-2 border-[#C59B5F] shadow-sm bg-[#FAF7F2] shrink-0 flex items-center justify-center">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden border-2 border-[#C59B5F] shadow-sm bg-[#FAF7F2] shrink-0 flex items-center justify-center transition-transform duration-300 group-hover:scale-[1.03]">
                 <img
                   src="/assets/aistudio/file_0000000063108211bead702fb91a015a_ccc1a723.png"
                   alt="Dazzlinglooks.in — Beauty Begins Here"
-                  className="w-full h-full object-cover scale-[1.06] group-hover:scale-110 transition-transform duration-300"
+                  className="w-full h-full object-cover scale-[1.06] group-hover:scale-110 transition-transform duration-500"
                 />
               </div>
               <div className="hidden sm:block">
@@ -144,20 +186,20 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search for skincare, makeup, haircare, fragrances..."
-                className="w-full bg-white border border-[#DFD2C0] focus:border-[#E91E63] rounded-full pl-10 pr-20 py-2 sm:py-2.5 text-xs sm:text-sm text-[#141110] placeholder-[#8A7B70] focus:outline-none shadow-2xs transition"
+                className="w-full bg-white border border-[#DFD2C0] focus:border-[#E91E63] focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] rounded-full pl-10 pr-20 py-2 sm:py-2.5 text-xs sm:text-sm text-[#141110] placeholder-[#8A7B70] focus:outline-none shadow-2xs transition-all duration-200"
               />
               {searchQuery && (
                 <button
                   type="button"
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-14 text-xs text-[#8A7B70] hover:text-[#141110]"
+                  className="absolute right-16 text-xs text-[#8A7B70] hover:text-[#141110]"
                 >
                   Clear
                 </button>
               )}
               <button
                 type="submit"
-                className="absolute right-1.5 bg-[#141110] hover:bg-[#E91E63] text-white text-[11px] font-semibold px-3.5 py-1.5 rounded-full transition cursor-pointer"
+                className="lux-btn absolute right-1.5 bg-[#141110] hover:bg-[#E91E63] text-white text-[11px] font-semibold px-3.5 py-1.5 rounded-full cursor-pointer"
               >
                 Search
               </button>
@@ -168,17 +210,17 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
           <div className="flex items-center gap-3 sm:gap-5 shrink-0">
             <Link
               to="/account"
-              className="flex items-center gap-1.5 text-[#141110] hover:text-[#E91E63] transition text-xs sm:text-sm font-medium"
+              className="flex items-center gap-1.5 text-[#141110] hover:text-[#E91E63] transition-colors text-xs sm:text-sm font-medium group"
             >
-              <User className="w-5 h-5 stroke-[1.8]" />
+              <User className="w-5 h-5 stroke-[1.8] transition-transform duration-200 group-hover:-translate-y-0.5" />
               <span className="hidden md:inline">Account</span>
             </Link>
 
             <Link
               to="/wishlist"
-              className="relative flex items-center gap-1.5 text-[#141110] hover:text-[#E91E63] transition text-xs sm:text-sm font-medium"
+              className="relative flex items-center gap-1.5 text-[#141110] hover:text-[#E91E63] transition-colors text-xs sm:text-sm font-medium group"
             >
-              <div className="relative">
+              <div className="relative transition-transform duration-200 group-hover:-translate-y-0.5">
                 <Heart className="w-5 h-5 stroke-[1.8]" />
                 {wishlist.length > 0 && (
                   <span className="absolute -top-1.5 -right-2 w-4 h-4 rounded-full bg-[#FCE8EE] border border-[#E91E63] text-[#E91E63] text-[10px] font-bold flex items-center justify-center">
@@ -191,11 +233,15 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 
             <Link
               to="/cart"
-              className="relative flex items-center gap-1.5 text-[#141110] hover:text-[#E91E63] transition text-xs sm:text-sm font-medium"
+              className="relative flex items-center gap-1.5 text-[#141110] hover:text-[#E91E63] transition-colors text-xs sm:text-sm font-medium group"
             >
-              <div className="relative">
+              <div className="relative transition-transform duration-200 group-hover:-translate-y-0.5">
                 <ShoppingCart className="w-5 h-5 stroke-[1.8]" />
-                <span className="absolute -top-1.5 -right-2 min-w-[18px] h-[18px] px-1 rounded-full bg-[#E91E63] text-white text-[10px] font-bold flex items-center justify-center shadow-2xs">
+                <span
+                  className={`absolute -top-1.5 -right-2 min-w-[18px] h-[18px] px-1 rounded-full bg-[#E91E63] text-white text-[10px] font-bold flex items-center justify-center shadow-2xs ${
+                    cartBadgePop ? 'lux-heart-pop' : ''
+                  }`}
+                >
                   {cartCount}
                 </span>
               </div>
@@ -219,25 +265,29 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                   >
                     <Link
                       to={item.path}
-                      className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs xl:text-[13px] font-medium transition ${
+                      className={`lux-nav-link inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs xl:text-[13px] font-medium ${
                         active
                           ? 'bg-[#FCE8EE] text-[#141110] font-semibold border-b-2 border-[#E91E63]'
                           : 'text-[#2B2421] hover:text-[#E91E63] hover:bg-[#F4EDE2]'
                       }`}
                     >
                       <span>{item.label}</span>
-                      <ChevronDown className="w-3.5 h-3.5" />
+                      <ChevronDown
+                        className={`w-3.5 h-3.5 transition-transform duration-250 ${
+                          shopDropdownOpen ? 'rotate-180 text-[#E91E63]' : ''
+                        }`}
+                      />
                     </Link>
 
                     {shopDropdownOpen && (
-                      <div className="absolute left-0 top-full pt-1 w-64 z-50">
+                      <div className="lux-modal-enter absolute left-0 top-full pt-1 w-64 z-50">
                         <div className="bg-white rounded-xl border border-[#E5D7C3] shadow-xl p-2 grid grid-cols-1 gap-0.5">
                           {CATEGORIES.map((cat) => (
                             <Link
                               key={cat.id}
                               to={cat.slug === 'combo-offers' ? '/offers' : `/category/${cat.slug}`}
                               onClick={() => setShopDropdownOpen(false)}
-                              className="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-[#231F1E] hover:bg-[#FCE8EE]/60 hover:text-[#E91E63] transition"
+                              className="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-[#231F1E] hover:bg-[#FCE8EE]/60 hover:text-[#E91E63] transition-all duration-200 hover:translate-x-0.5"
                             >
                               <span>{cat.name}</span>
                               {cat.badge && (
@@ -258,7 +308,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                 <Link
                   key={item.label}
                   to={item.path}
-                  className={`px-3 py-1.5 rounded-md text-xs xl:text-[13px] font-medium transition whitespace-nowrap ${
+                  className={`lux-nav-link px-3 py-1.5 rounded-md text-xs xl:text-[13px] font-medium whitespace-nowrap ${
                     active
                       ? 'bg-[#FCE8EE] text-[#141110] font-semibold border-b-2 border-[#E91E63]'
                       : 'text-[#2B2421] hover:text-[#E91E63] hover:bg-[#F4EDE2]'
@@ -273,14 +323,14 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 
         {/* Mobile Drawer Navigation */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-white border-t border-[#E5D7C3] px-4 py-4 space-y-2 shadow-xl max-h-[75vh] overflow-y-auto">
+          <div className="lux-modal-enter lg:hidden bg-white border-t border-[#E5D7C3] px-4 py-4 space-y-2 shadow-xl max-h-[75vh] overflow-y-auto">
             <div className="grid grid-cols-2 gap-2">
               {navItems.map((item) => (
                 <Link
                   key={item.label}
                   to={item.path}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`px-3 py-2 rounded-lg text-xs font-semibold border ${
+                  className={`px-3 py-2 rounded-lg text-xs font-semibold border transition ${
                     isNavActive(item.path, item.label)
                       ? 'bg-[#FCE8EE] border-[#E91E63] text-[#E91E63]'
                       : 'bg-[#FAF7F2] border-[#E8DCCB] text-[#231F1E]'
@@ -308,8 +358,10 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         )}
       </header>
 
-      {/* Main Page Content */}
-      <main className="flex-1">{children}</main>
+      {/* Main Page Content with Restrained Silk Route Transition */}
+      <main key={location.pathname} className="flex-1 lux-page-enter">
+        {children}
+      </main>
 
       {/* 4. Dark Luxury Footer Matching Reference Image 1 */}
       <footer className="bg-[#121010] text-[#E6DDD2] border-t border-[#2D2623]">
@@ -322,7 +374,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                   <img
                     src="/assets/aistudio/file_0000000063108211bead702fb91a015a_ccc1a723.png"
                     alt="Dazzlinglooks.in — Beauty Begins Here"
-                    className="w-full h-full object-cover scale-[1.06] group-hover:scale-110 transition-transform duration-300"
+                    className="w-full h-full object-cover scale-[1.06] group-hover:scale-110 transition-transform duration-500"
                   />
                 </div>
                 <div>
@@ -341,7 +393,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                 <a
                   href="#social-instagram"
                   onClick={(e) => e.preventDefault()}
-                  className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#F58529] via-[#DD2A7B] to-[#8134AF] text-white flex items-center justify-center text-xs font-bold shadow-xs"
+                  className="lux-btn w-8 h-8 rounded-full bg-gradient-to-tr from-[#F58529] via-[#DD2A7B] to-[#8134AF] text-white flex items-center justify-center text-xs font-bold shadow-xs"
                   aria-label="Instagram"
                 >
                   IG
@@ -349,7 +401,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                 <a
                   href="#social-facebook"
                   onClick={(e) => e.preventDefault()}
-                  className="w-8 h-8 rounded-full bg-[#1877F2] text-white flex items-center justify-center text-xs font-bold shadow-xs"
+                  className="lux-btn w-8 h-8 rounded-full bg-[#1877F2] text-white flex items-center justify-center text-xs font-bold shadow-xs"
                   aria-label="Facebook"
                 >
                   f
@@ -357,7 +409,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                 <a
                   href="#social-whatsapp"
                   onClick={(e) => e.preventDefault()}
-                  className="w-8 h-8 rounded-full bg-[#25D366] text-white flex items-center justify-center text-xs font-bold shadow-xs"
+                  className="lux-btn w-8 h-8 rounded-full bg-[#25D366] text-white flex items-center justify-center text-xs font-bold shadow-xs"
                   aria-label="WhatsApp"
                 >
                   WA
@@ -365,7 +417,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                 <a
                   href="#social-youtube"
                   onClick={(e) => e.preventDefault()}
-                  className="w-8 h-8 rounded-full bg-[#FF0000] text-white flex items-center justify-center text-xs font-bold shadow-xs"
+                  className="lux-btn w-8 h-8 rounded-full bg-[#FF0000] text-white flex items-center justify-center text-xs font-bold shadow-xs"
                   aria-label="YouTube"
                 >
                   YT
@@ -511,10 +563,10 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       </footer>
 
       {/* Mobile Bottom App Navigation Bar */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-[#E5D7C3] px-2 py-1.5 flex items-center justify-around shadow-[0_-4px_16px_rgba(0,0,0,0.06)]">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/98 backdrop-blur-md border-t border-[#E5D7C3] px-2 py-1.5 flex items-center justify-around shadow-[0_-4px_16px_rgba(0,0,0,0.06)]">
         <Link
           to="/"
-          className={`flex flex-col items-center gap-0.5 text-[10px] font-medium ${
+          className={`flex flex-col items-center gap-0.5 text-[10px] font-medium active:scale-95 transition-transform ${
             location.pathname === '/' ? 'text-[#E91E63] font-semibold' : 'text-[#5A4E46]'
           }`}
         >
@@ -523,7 +575,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         </Link>
         <Link
           to="/category/skincare"
-          className={`flex flex-col items-center gap-0.5 text-[10px] font-medium ${
+          className={`flex flex-col items-center gap-0.5 text-[10px] font-medium active:scale-95 transition-transform ${
             location.pathname.startsWith('/category')
               ? 'text-[#E91E63] font-semibold'
               : 'text-[#5A4E46]'
@@ -534,7 +586,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         </Link>
         <Link
           to="/offers"
-          className={`flex flex-col items-center gap-0.5 text-[10px] font-medium ${
+          className={`flex flex-col items-center gap-0.5 text-[10px] font-medium active:scale-95 transition-transform ${
             location.pathname === '/offers' ? 'text-[#E91E63] font-semibold' : 'text-[#5A4E46]'
           }`}
         >
@@ -543,7 +595,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         </Link>
         <Link
           to="/wishlist"
-          className={`flex flex-col items-center gap-0.5 text-[10px] font-medium ${
+          className={`flex flex-col items-center gap-0.5 text-[10px] font-medium active:scale-95 transition-transform ${
             location.pathname === '/wishlist' ? 'text-[#E91E63] font-semibold' : 'text-[#5A4E46]'
           }`}
         >
@@ -552,7 +604,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         </Link>
         <Link
           to="/cart"
-          className={`relative flex flex-col items-center gap-0.5 text-[10px] font-medium ${
+          className={`relative flex flex-col items-center gap-0.5 text-[10px] font-medium active:scale-95 transition-transform ${
             location.pathname === '/cart' ? 'text-[#E91E63] font-semibold' : 'text-[#5A4E46]'
           }`}
         >

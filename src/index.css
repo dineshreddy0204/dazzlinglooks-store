@@ -5,6 +5,8 @@
     --font-serif: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
     --font-script: 'Great Vibes', cursive;
     --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --ease-luxury: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-silk: cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   body {
@@ -32,6 +34,338 @@
 
 .font-sans-clean {
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* ============================================================================
+   ULTRA-PREMIUM LUXURY FLOATING & MICRO-INTERACTION SYSTEM
+   Hardware-accelerated (transform & opacity only)
+   ============================================================================ */
+
+@keyframes luxuryFloatSlow {
+  0%, 100% {
+    transform: translate3d(0, 0px, 0);
+  }
+  50% {
+    transform: translate3d(0, -6px, 0);
+  }
+}
+
+@keyframes luxuryFloatMedium {
+  0%, 100% {
+    transform: translate3d(0, 0px, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(0, -8px, 0) rotate(0.6deg);
+  }
+}
+
+@keyframes luxuryFloatReverse {
+  0%, 100% {
+    transform: translate3d(0, 0px, 0);
+  }
+  50% {
+    transform: translate3d(0, 6px, 0);
+  }
+}
+
+@keyframes luxuryHeroSceneBreathe {
+  0%, 100% {
+    transform: translate3d(0, 0px, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(0, -5px, 0) scale(1.012);
+  }
+}
+
+@keyframes luxurySparkleTwinkle {
+  0%, 100% {
+    opacity: 0.18;
+    transform: translate3d(0, 0px, 0) scale(0.85);
+  }
+  50% {
+    opacity: 0.65;
+    transform: translate3d(0, -7px, 0) scale(1.1);
+  }
+}
+
+@keyframes luxurySequenceEnter {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes luxuryPageFade {
+  0% {
+    opacity: 0.01;
+    transform: translate3d(0, 8px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Occasional soft halo for the Dazzling Beauty AI launcher (pulses gently once every 8s) */
+@keyframes luxuryOccasionalHalo {
+  0%, 72%, 100% {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  82% {
+    opacity: 0.55;
+    transform: scale(1.08);
+  }
+  92% {
+    opacity: 0;
+    transform: scale(1.16);
+  }
+}
+
+@keyframes luxuryHeartPop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.28);
+  }
+  75% {
+    transform: scale(0.92);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes luxuryCartConfirmPop {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(0.96);
+  }
+  70% {
+    transform: scale(1.03);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes luxuryMessageSlideIn {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0) scale(0.985);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes luxuryModalScaleIn {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+/* Desynchronized organic floating utility classes */
+.lux-float-1 {
+  animation: luxuryFloatSlow 7.4s ease-in-out infinite;
+  will-change: transform;
+}
+
+.lux-float-2 {
+  animation: luxuryFloatMedium 8.8s ease-in-out 1.1s infinite;
+  will-change: transform;
+}
+
+.lux-float-3 {
+  animation: luxuryFloatReverse 9.6s ease-in-out 2.3s infinite;
+  will-change: transform;
+}
+
+.lux-float-4 {
+  animation: luxuryFloatSlow 10.4s ease-in-out 0.6s infinite;
+  will-change: transform;
+}
+
+.lux-hero-scene {
+  animation: luxuryHeroSceneBreathe 11.5s ease-in-out infinite;
+  will-change: transform;
+}
+
+.lux-sparkle-1 {
+  animation: luxurySparkleTwinkle 6.5s ease-in-out infinite;
+}
+
+.lux-sparkle-2 {
+  animation: luxurySparkleTwinkle 8.2s ease-in-out 1.8s infinite;
+}
+
+.lux-sparkle-3 {
+  animation: luxurySparkleTwinkle 7.4s ease-in-out 3.1s infinite;
+}
+
+/* Hero Sequenced Entrance */
+.lux-seq-1 {
+  animation: luxurySequenceEnter 680ms var(--ease-luxury) 40ms both;
+}
+.lux-seq-2 {
+  animation: luxurySequenceEnter 720ms var(--ease-luxury) 150ms both;
+}
+.lux-seq-3 {
+  animation: luxurySequenceEnter 740ms var(--ease-luxury) 260ms both;
+}
+.lux-seq-4 {
+  animation: luxurySequenceEnter 760ms var(--ease-luxury) 370ms both;
+}
+.lux-seq-5 {
+  animation: luxurySequenceEnter 820ms var(--ease-luxury) 180ms both;
+}
+
+.lux-page-enter {
+  animation: luxuryPageFade 320ms var(--ease-luxury) both;
+}
+
+.lux-ai-launcher-idle {
+  animation: luxuryFloatSlow 6.8s ease-in-out infinite;
+}
+
+.lux-ai-halo {
+  animation: luxuryOccasionalHalo 8.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.lux-msg-enter {
+  animation: luxuryMessageSlideIn 340ms var(--ease-luxury) both;
+}
+
+.lux-modal-enter {
+  animation: luxuryModalScaleIn 300ms var(--ease-luxury) both;
+}
+
+.lux-heart-pop {
+  animation: luxuryHeartPop 380ms var(--ease-luxury);
+}
+
+.lux-cart-pop {
+  animation: luxuryCartConfirmPop 360ms var(--ease-luxury);
+}
+
+/* Luxury Button & Interactive Polish */
+.lux-btn {
+  transition: transform 260ms var(--ease-luxury),
+              box-shadow 260ms var(--ease-luxury),
+              background-color 220ms ease,
+              border-color 220ms ease,
+              color 220ms ease;
+}
+.lux-btn:hover {
+  transform: translate3d(0, -2px, 0);
+  box-shadow: 0 8px 22px -4px rgba(20, 17, 16, 0.18);
+}
+.lux-btn:active {
+  transform: translate3d(0, 0px, 0) scale(0.98);
+}
+.lux-btn:focus-visible {
+  outline: 2px solid #C59B5F;
+  outline-offset: 2px;
+}
+
+/* Luxury Product Card & Category Card Hover/Tap Mechanics */
+.lux-card {
+  transition: transform 360ms var(--ease-luxury),
+              box-shadow 360ms var(--ease-luxury),
+              border-color 280ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .lux-card:hover {
+    transform: translate3d(0, -5px, 0);
+    box-shadow: 0 14px 32px -8px rgba(20, 17, 16, 0.1);
+  }
+}
+.lux-card:active {
+  transform: scale(0.985);
+}
+
+.lux-category-tile {
+  transition: transform 380ms var(--ease-luxury),
+              box-shadow 380ms var(--ease-luxury),
+              border-color 280ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .lux-category-tile:hover {
+    transform: translate3d(0, -6px, 0);
+    box-shadow: 0 12px 26px -6px rgba(233, 30, 99, 0.14);
+  }
+}
+.lux-category-tile:active {
+  transform: scale(0.97);
+}
+
+/* Refined Navigation Underline */
+.lux-nav-link {
+  position: relative;
+  transition: color 220ms ease, background-color 220ms ease;
+}
+.lux-nav-link::after {
+  content: '';
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 2px;
+  height: 1.5px;
+  background: linear-gradient(90deg, #C59B5F, #E91E63);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 280ms var(--ease-luxury);
+}
+@media (hover: hover) and (pointer: fine) {
+  .lux-nav-link:hover::after {
+    transform: scaleX(1);
+  }
+}
+
+/* Pause all animations when browser tab is hidden to save battery on Android/mobile */
+html.page-hidden *,
+html.page-hidden *::before,
+html.page-hidden *::after {
+  animation-play-state: paused !important;
+}
+
+/* Respect prefers-reduced-motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .lux-float-1,
+  .lux-float-2,
+  .lux-float-3,
+  .lux-float-4,
+  .lux-hero-scene,
+  .lux-ai-launcher-idle,
+  .lux-ai-halo,
+  .lux-sparkle-1,
+  .lux-sparkle-2,
+  .lux-sparkle-3 {
+    animation: none !important;
+    transform: none !important;
+  }
 }
 
 /* Custom scrollbar for subtle luxury look */
@@ -72,4 +406,8 @@ input[type="range"].luxury-range::-webkit-slider-thumb {
   border-radius: 50%;
   border: 2px solid #FAF7F2;
   box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+  transition: transform 200ms var(--ease-luxury);
+}
+input[type="range"].luxury-range::-webkit-slider-thumb:hover {
+  transform: scale(1.18);
 }
