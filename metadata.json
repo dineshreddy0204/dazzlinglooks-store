@@ -1,0 +1,6 @@
+{
+  "name": "Dazzling Looks — Premium Beauty & Skincare Store",
+  "description": "Premium beauty, skincare, makeup, haircare, and fragrance e-commerce store in India featuring authentic dermatologically tested products.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

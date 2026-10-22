@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-serif: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+    --font-script: 'Great Vibes', cursive;
+    --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: #FAF7F2;
+    color: #1A1615;
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, .font-editorial {
+    font-family: var(--font-serif);
+  }
+}
+
+.font-serif-editorial {
+  font-family: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+}
+
+.font-script {
+  font-family: 'Great Vibes', cursive;
+}
+
+.font-sans-clean {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Custom scrollbar for subtle luxury look */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #FAF7F2;
+}
+::-webkit-scrollbar-thumb {
+  background: #D9CBB8;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #C59B5F;
+}
+
+/* Range slider styling matching reference pink/gold */
+input[type="range"].luxury-range {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+input[type="range"].luxury-range::-webkit-slider-runnable-track {
+  background: #E8DCCB;
+  height: 4px;
+  border-radius: 2px;
+}
+input[type="range"].luxury-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -5px;
+  background-color: #E91E63;
+  height: 14px;
+  width: 14px;
+  border-radius: 50%;
+  border: 2px solid #FAF7F2;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+}
